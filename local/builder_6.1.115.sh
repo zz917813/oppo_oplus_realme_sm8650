@@ -33,6 +33,8 @@ read -p "是否启用Re-Kernel？(y/n，默认：n): " APPLY_REKERNEL
 APPLY_REKERNEL=${APPLY_REKERNEL:-n}
 read -p "是否启用内核级基带保护？(y/n，默认：y): " APPLY_BBG
 APPLY_BBG=${APPLY_BBG:-y}
+read -p "请输入自定义内核构建时间(留空则使用当前时间，格式例如 2025-01-01 08:00:00): " CUSTOM_BUILD_TIME
+CUSTOM_BUILD_TIME=${CUSTOM_BUILD_TIME:-}
 
 if [[ "$KSU_BRANCH" == "y" || "$KSU_BRANCH" == "Y" ]]; then
   KSU_TYPE="SukiSU Ultra"
@@ -61,6 +63,7 @@ echo "应用 Droidspaces 容器支持: $APPLY_DROIDSPACES"
 echo "启用三星SSG IO调度器: $APPLY_SSG"
 echo "启用Re-Kernel: $APPLY_REKERNEL"
 echo "启用内核级基带保护: $APPLY_BBG"
+echo "自定义内核构建时间: ${CUSTOM_BUILD_TIME:-当前系统时间}"
 echo "===================="
 echo
 
@@ -365,7 +368,18 @@ sed -i 's/check_defconfig//' ./common/build.config.gki
 # ===== 编译内核 =====
 echo ">>> 开始编译内核..."
 cd common
-make -j$(nproc --all) LLVM=-20 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnuabeihf- CC=clang LD=ld.lld HOSTCC=clang HOSTLD=ld.lld O=out KCFLAGS+=-O2 KCFLAGS+=-Wno-error gki_defconfig all
+FAKETIME_LIB="$SCRIPT_DIR/../lib/libfaketimeMT.so"
+if [[ -n "$CUSTOM_BUILD_TIME" && -f "$FAKETIME_LIB" ]]; then
+  echo ">>> 使用自定义构建时间: $CUSTOM_BUILD_TIME"
+  export KBUILD_BUILD_TIMESTAMP="$CUSTOM_BUILD_TIME"
+  export FAKETIME="$CUSTOM_BUILD_TIME"
+  export FAKETIME_DONT_FAKE_MONOTONIC=1
+  export LD_PRELOAD="$FAKETIME_LIB"
+  make -j$(nproc --all) LLVM=-20 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnuabeihf- CC=clang LD=ld.lld HOSTCC=clang HOSTLD=ld.lld O=out KCFLAGS+=-O2 KCFLAGS+=-Wno-error gki_defconfig all
+  unset LD_PRELOAD FAKETIME FAKETIME_DONT_FAKE_MONOTONIC KBUILD_BUILD_TIMESTAMP
+else
+  make -j$(nproc --all) LLVM=-20 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnuabeihf- CC=clang LD=ld.lld HOSTCC=clang HOSTLD=ld.lld O=out KCFLAGS+=-O2 KCFLAGS+=-Wno-error gki_defconfig all
+fi
 echo ">>> 内核编译成功！"
 
 # ===== 选择使用 patch_linux (KPM补丁)=====
