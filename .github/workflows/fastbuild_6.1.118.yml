@@ -578,7 +578,7 @@ jobs:
           wget https://github.com/$GITHUB_REPOSITORY/raw/refs/heads/$GITHUB_REF_NAME/lib/libfaketimeMT.so
           chmod 777 ./*.so
           export FAKESTAT="2025-08-27 03:41:40"
-          export FAKETIME="@1756357300"
+          export FAKETIME="@1756266100"
           export KBUILD_BUILD_TIMESTAMP="${{ env.BUILD_TIME }}"
           echo "FAKESTAT=$FAKESTAT" >> $GITHUB_ENV
           echo "FAKETIME=$FAKETIME" >> $GITHUB_ENV
