@@ -10,7 +10,7 @@ echo "===== 欧加真MT6989通用6.1.115 A15 (天玑特供)OKI内核本地编译
 echo ">>> 读取用户配置..."
 MANIFEST=${MANIFEST:-oppo+oplus+realme}
 read -p "请输入自定义内核后缀（默认：android14-11-o-gca13bffobf09）: " CUSTOM_SUFFIX
-CUSTOM_SUFFIX=${CUSTOM_SUFFIX:-android14-11-o-gca13bffobf09}
+CUSTOM_SUFFIX=${CUSTOM_SUFFIX:-6.1.118-android14-11-o-g778e4490e346}
 read -p "是否启用susfs？(y/n，默认：y): " APPLY_SUSFS
 APPLY_SUSFS=${APPLY_SUSFS:-y}
 read -p "是否启用 KPM？(y-启用 KpatchNext独立kpm实现, n-关闭kpm，默认：n): " USE_PATCH_LINUX
@@ -34,7 +34,7 @@ APPLY_REKERNEL=${APPLY_REKERNEL:-n}
 read -p "是否启用内核级基带保护？(y/n，默认：y): " APPLY_BBG
 APPLY_BBG=${APPLY_BBG:-y}
 read -p "请输入自定义内核构建时间(留空则使用当前时间，格式例如 2025-01-01 08:00:00): " CUSTOM_BUILD_TIME
-CUSTOM_BUILD_TIME=${CUSTOM_BUILD_TIME:-}
+CUSTOM_BUILD_TIME=${CUSTOM_BUILD_TIME:-Wed Aug 27 03:41:40 UTC 2025}
 
 if [[ "$KSU_BRANCH" == "y" || "$KSU_BRANCH" == "Y" ]]; then
   KSU_TYPE="SukiSU Ultra"
