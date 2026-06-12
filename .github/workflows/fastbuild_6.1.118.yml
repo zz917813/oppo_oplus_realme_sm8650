@@ -5,7 +5,8 @@ env:
   ANDROID_VERSION: 'android14'
   KERNEL_VERSION: '6.1'
   SUB_VERSION: '118'
-  KERNEL_NAME: 'android14-11-o-gca13bffobf09'
+  KERNEL_NAME: '6.1.118-android14-11-o-g778e4490e346'
+  BUILD_TIME: 'Wed Aug 27 03:41:40 UTC 2025'
   CCACHE_KEY: ccache-ecsv3-6.1.118
 
 on:
@@ -91,7 +92,7 @@ on:
         type: boolean
         default: 'false'
       kernel_suffix:
-        description: '内核后缀(留空默认,开头别加连字符,勿加空格等影响指令运行的保留字符)'
+        description: '内核后缀(留空使用默认值,开头别加连字符,勿加空格等影响指令运行的保留字符)'
         required: false
         type: string
         default: ''
@@ -576,8 +577,9 @@ jobs:
           wget https://github.com/$GITHUB_REPOSITORY/raw/refs/heads/$GITHUB_REF_NAME/lib/libfakestat.so
           wget https://github.com/$GITHUB_REPOSITORY/raw/refs/heads/$GITHUB_REF_NAME/lib/libfaketimeMT.so
           chmod 777 ./*.so
-          export FAKESTAT="2025-05-25 12:00:00"
-          export FAKETIME="@2025-05-25 13:00:00"
+          export FAKESTAT="2025-08-27 03:41:40"
+          export FAKETIME="@1756357300"
+          export KBUILD_BUILD_TIMESTAMP="${{ env.BUILD_TIME }}"
           echo "FAKESTAT=$FAKESTAT" >> $GITHUB_ENV
           echo "FAKETIME=$FAKETIME" >> $GITHUB_ENV
           SO_DIR=$(pwd)
